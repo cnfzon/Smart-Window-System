@@ -1,0 +1,126 @@
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+#endif
+
+#include "esp6612motordriver.h"
+#include <Streaming.h>
+
+// pins
+#define PWMA    12
+#define PWMB    14
+//----------------
+#define AIN1     4
+#define AIN2     5
+#define BIN1    13
+#define BIN2    15
+
+// Motor 1, left side
+// AIN1, AIN2
+#define MOTOR_1_FORWARD     digitalWrite(AIN1, HIGH); \
+                            digitalWrite(AIN2, LOW)
+#define MOTOR_1_BACKWARD    digitalWrite(AIN1, LOW); \
+                            digitalWrite(AIN2, HIGH)
+#define MOTOR_1_STOP        digitalWrite(AIN1, HIGH); \
+                            digitalWrite(AIN2, HIGH)
+// Motor 2, right side
+// BIN1, BIN2
+#define MOTOR_2_FORWARD     digitalWrite(BIN1, HIGH); \
+                            digitalWrite(BIN2, LOW)
+#define MOTOR_2_BACKWARD    digitalWrite(BIN1, LOW); \
+                            digitalWrite(BIN2, HIGH)
+#define MOTOR_2_STOP        digitalWrite(BIN1, HIGH); \
+                            digitalWrite(BIN2, HIGH)
+
+void Motor_init() {
+	// pins 初始化
+	pinMode( AIN1, OUTPUT );
+	pinMode( AIN2, OUTPUT );
+	pinMode( BIN1, OUTPUT );
+	pinMode( BIN2, OUTPUT );
+    pinMode( PWMA, OUTPUT );
+    pinMode( PWMB, OUTPUT );
+    pinMode( LED , OUTPUT );
+
+    LEDOFF;
+	MOTOR_1_STOP;
+	MOTOR_2_STOP;
+}
+
+void Motor_run( RCCOMMAND rc ) {  
+
+    int mspeed = 0, msteering = 0, mtrim = 0;
+    WIFI2WDCAR car2wd = { STOP, {0}, {0} };
+
+    //* *** 簡易版本
+    //** 只能單獨接收來自 throttle 或是 steering 的數值
+    //** 當兩個數值都不為零時，只會前進或是後退
+    mspeed    = rc.throttle;
+    mtrim     = rc.trim;
+    if( rc.throttle == 0 ) { // 旋轉
+            mspeed = rc.steering;
+            if ( rc.steering > 0 ) { // 順時針旋轉 (CW)
+                car2wd.moving = CW;
+            } else { // ( rc.steering < 0 ) // 逆時針旋轉 (CCW)
+                mspeed *= -1;
+                car2wd.moving = CCW;
+            }
+            // 小車旋轉，不需要修正轉速偏差
+            car2wd.ML.speed = mspeed;
+            car2wd.MR.speed = mspeed;
+    } else { // steering == 0 或 throttle 和 steering 都不為零
+        if( rc.throttle > 0 ) { // 前進 (FORWARD)
+            car2wd.moving = FORWARD;
+        } else if ( rc.throttle < 0 ) { // 後退 (BACKWARD)
+            car2wd.moving = BACKWARD;
+            mspeed *= -1;
+        } else { // 停止 (STOP)
+            car2wd.moving = STOP;
+            mspeed = 0;
+        }
+        
+        // trim
+        if ( rc.trim > 0 ) {
+            car2wd.ML.speed = mspeed;
+            car2wd.MR.speed = constrain( mspeed + mtrim, 0, 1023 );
+        } else if ( rc.trim < 0 ) {
+            mtrim *= -1;
+            car2wd.ML.speed = constrain( mspeed + mtrim, 0, 1023 );
+            car2wd.MR.speed = mspeed;
+        } else {
+            car2wd.ML.speed = mspeed;
+            car2wd.MR.speed = mspeed;
+        }
+    }
+
+    //* *** 馬達轉向
+    switch( car2wd.moving ) {
+        case FORWARD:
+            MOTOR_1_FORWARD;
+            MOTOR_2_FORWARD;
+
+        break;
+        case BACKWARD:
+            MOTOR_1_BACKWARD;
+            MOTOR_2_BACKWARD;
+        break;
+        case CCW:
+            MOTOR_1_BACKWARD;
+            MOTOR_2_FORWARD;
+        break;
+        case CW:
+            MOTOR_1_FORWARD;
+            MOTOR_2_BACKWARD;
+        break;
+        default:
+            MOTOR_1_STOP;
+            MOTOR_2_STOP;
+    }
+
+    //Serial << car2wd.moving << ", " << car2wd.ML.speed << ", " << car2wd.MR.speed << endl;
+
+    // 馬達轉速
+    analogWrite( PWMA, car2wd.ML.speed );
+    analogWrite( PWMB, car2wd.MR.speed );
+}

@@ -1,0 +1,23 @@
+https://zerotech.club/esp32-gpio/
+
+https://www.chosemaker.com/board/esp32/lesson-12/
+
+https://blog.kalan.dev/2020-07-24-arduino-esp32-co2-sensor-2
+
+
+
+1.繼續用UART把arduino(主)的接腳擴充RXTX各一
+  (加入SoftwareSerial的library可以做到)
+  然後接到esp32的GPIO
+  這樣就在僕和esp各做一組UART
+
+2.把主傳給僕的TX並聯給esp直接做並聯
+  RX不用接就不用回傳 變成單方面接收
+  有點像閃控式的協議(不過不確定data完整性有風險)
+
+3.換成用SPI做成菊鍊式的協議
+  遵從主僕關係 讓esp晚僕一個baud rate收到訊號
+  可以用邊緣觸發來抓訊號or接SCK出去
+
+SoftwareSerial網址
+https://github.com/PaulStoffregen/SoftwareSerial

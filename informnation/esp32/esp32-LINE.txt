@@ -1,0 +1,32 @@
+esp32-LINE
+
+https://newtalent.tw/html-main/friends/article/content.html?aId=197&_timestamp=1699527461705
+
+https://youyouyou.pixnet.net/blog/post/120275932-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AF%87-esp32-line%E9%80%9A%E7%9F%A5%EF%BC%9A%E5%80%89%E5%BA%AB%E6%BA%AB%E5%BA%A6%E7%95%B0%E5%B8%B8%E6%A9%9F%E5%99%A8%E4%BA%BA
+
+https://riverye.com/2022/12/31/How-to-Test-APIs-with-Postman/
+
+
+postman 中文
+https://www.postman.com/restless-astronaut-2760/workspace/ecem-api/folder/16572114-e96efc56-8d67-4882-9763-1fadfc2d0ddf
+
+
+google硬碟測試line notify
+https://www.oxxostudio.tw/articles/201806/line-notify.html
+
+
+program參考:
+https://ithelp.ithome.com.tw/articles/10271219
+
+
+esp32+mq2 範例
+https://youyouyou.pixnet.net/blog/post/120272743-%E7%AC%AC%E4%B8%83%E7%AF%87-esp32%E7%93%A6%E6%96%AF%E8%AD%A6%E5%A0%B1%E5%99%A8
+
+
+esp23 開發環境
+https://blog.darkthread.net/blog/esp32-for-iot/
+
+
+-------------------------------------------------------------------------------------esp32 arduino做UART的協定
+demo:
+https://randomnerdtutorials.com/esp-now-many-to-one-esp32/

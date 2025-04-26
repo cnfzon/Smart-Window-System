@@ -1,0 +1,39 @@
+https://www.dropbox.com/s/intch13ampfbtlz/ESP07TwoWDWiFiCarTCPDemo.zip?dl=0&file_subpath=%2Fesp6612motordriver.h
+
+
+
+
+#ifndef ESP6612MOTORDRIVER_H_
+#define ESP6612MOTORDRIVER_H_
+
+// built-in LED of ESP-07
+#define LED     2
+#define LEDON   digitalWrite( LED, LOW )    // blue led, active low
+#define LEDOFF  digitalWrite( LED, HIGH )
+
+enum CARMOVE { STOP = 0, FORWARD, BACKWARD, CW, CCW };
+
+typedef struct rccommand {
+    int throttle;               // 行進速度
+    int steering;               // 轉向大小
+    int trim;                   // 左右輪差
+} RCCOMMAND;
+
+typedef struct motordrive {
+    int speed; // 只能是正值
+} MOTORDRIVE;
+
+typedef struct  wifi2wdcar{
+    // 由 carthrottle 知道小車前進或後退；carsteering 知道馬達的轉向
+    // 綜合 throttle 與 steering 的大小，比較得出最後馬達的轉向與速度
+    CARMOVE moving;        // 小車動作
+    MOTORDRIVE ML;              // 左側馬達 pwm
+    MOTORDRIVE MR;              // 右側馬達 pwm
+} WIFI2WDCAR;
+
+
+void Motor_init();
+
+void Motor_run( RCCOMMAND rc );
+
+#endif // ESP6612MOTORDRIVER_H_

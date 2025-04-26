@@ -1,0 +1,24 @@
+//--->window關窗
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);//1L2H 放線
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);//3H4L 收線
+  delay(10500);
+  //reset 狀態
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, HIGH);// L stop
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, HIGH);// R stop
+  delay(2000);
+  //<---window開窗
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);//1H2L 收線
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);//3L4H 放線
+  delay(10500); 
+  //reset 狀態
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, HIGH);// L stop
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, HIGH);// R stop
+  delay(2000);
